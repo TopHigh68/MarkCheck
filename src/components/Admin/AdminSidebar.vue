@@ -1,5 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { useAdminAuthStore } from '@/stores/adminAuth'
+
 defineProps({
   sidebarOpen: Boolean,
 })
@@ -7,11 +9,11 @@ defineProps({
 defineEmits(['toggle-sidebarclose'])
 
 const router = useRouter()
+const authStore = useAdminAuthStore()
 
 function logout() {
-  localStorage.removeItem('admin_token') // ou sessionStorage, ou clear(), selon ton cas
-  // tu peux aussi vider un store si tu utilises pinia/vuex
-  router.push('login')
+  authStore.logout() // Nettoie le token côté Pinia
+  router.push('/admin/login')
 }
 </script>
 
@@ -23,9 +25,9 @@ function logout() {
       'lg:translate-x-0 lg:static lg:flex',
     ]"
   >
+    <!-- Header -->
     <div class="h-16 flex items-center justify-between px-4 border-b border-gray-700">
       <span class="text-xl font-bold">Mackcheck Admin</span>
-
       <button @click="$emit('toggle-sidebarclose')" class="lg:hidden text-white text-xl">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
           <path
@@ -40,125 +42,86 @@ function logout() {
     <nav class="flex-1 p-4 space-y-2">
       <router-link
         to="/admin/dashboard"
-        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        active-class="nav-link-active"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            />
-          </svg>
-          <span>Dashboard</span>
+        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition"
+        active-class="bg-gray-700 text-white font-semibold"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5Zm0 3.9a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0 7.9c2 0 6 1.09 6 3.08a7.2 7.2 0 0 1-12 0c0-1.99 4-3.08 6-3.08"
+          />
+        </svg>
+        <span>Admin Dashborad</span>
       </router-link>
 
+      <!-- Nouvelles demandes -->
       <router-link
-        to="/admin/dashboard"
-        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        active-class="nav-link-active"
-        >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
+        to="/admin/demandes"
+        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition"
+        active-class="bg-gray-700 text-white font-semibold"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <g
+            fill="none"
+            stroke="currentColor"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-          />
+          >
+            <path
+              d="M4 18a2 2 0 1 0 4 0a2 2 0 1 0-4 0M4 6a2 2 0 1 0 4 0a2 2 0 1 0-4 0m12 12a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 8v8"
+            />
+            <path d="M11 6h5a2 2 0 0 1 2 2v8" />
+            <path d="m14 9l-3-3l3-3" />
+          </g>
         </svg>
         <span>Nouvelles demandes</span>
       </router-link>
 
+      <!-- Liste des vendeurs -->
       <router-link
-        to="/admin/dashboard"
-        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        active-class="nav-link-active"
-        >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        to="/admin/vendeurs"
+        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition"
+        active-class="bg-gray-700 text-white font-semibold"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path
+            fill="none"
+            stroke="currentColor"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+            stroke-width="1.5"
+            d="M5.08 15.296c-1.218.738-4.412 2.243-2.466 4.126c.95.92 2.009 1.578 3.34 1.578h7.593c1.33 0 2.389-.658 3.34-1.578c1.945-1.883-1.25-3.389-2.468-4.126a9.06 9.06 0 0 0-9.338 0M13.5 7a4 4 0 1 1-8 0a4 4 0 0 1 8 0M17 5h5m-5 3h5m-2 3h2"
+            color="currentColor"
           />
         </svg>
         <span>Liste des vendeurs</span>
       </router-link>
-      <router-link
-        to="/admin/dashboard"
-        class="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        active-class="nav-link-active"
-        >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
-        <span> Gestion des statuts</span>
-      </router-link>
-
-
-
     </nav>
 
-    
-    <div class="py-3 flex justify-center border-t border-gray-200 dark:border-gray-700">
+    <!-- Déconnexion -->
+    <div class="py-3 flex justify-center border-t border-gray-700">
       <button
         @click="logout"
-        class="w-full flex items-center justify-center cursor-pointer space-x-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+        class="w-full flex items-center justify-center space-x-2 text-red-500 hover:text-red-300"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" />
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            d="M7 16v1a3 3 0 003 3h4a3 3 0 003-3v-1"
           />
         </svg>
-        <span>Log out</span>
+        <span>Déconnexion</span>
       </button>
     </div>
-
   </aside>
 
-  <!-- Overlay (mobile only) -->
+  <!-- Overlay -->
   <div
     v-if="sidebarOpen"
-    class="fixed inset-0 z-30 blur bg-[#0000003f] bg-opacity-50 lg:hidden"
+    class="fixed inset-0 z-30 backdrop-blur-sm  bg-opacity-40 lg:hidden"
     @click="$emit('toggle-sidebarclose')"
   ></div>
 </template>

@@ -1,7 +1,18 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAdminAuthStore } from '@/stores/adminAuth'
+const router = useRouter()
+const authStore = useAdminAuthStore()
+
+function logout() {
+  authStore.logout() // Nettoie le token côté Pinia
+  router.push('/admin/login')
+}
+</script>
 
 <template>
-  <header class="h-16 bg-white shadow flex items-center lg:justify-end justify-between px-4">
+  <header class="h-16 bg-white  shadow flex items-center lg:justify-end justify-between px-4">
+
     <button @click="$emit('toggle-sidebar')" class="text-gray-800 lg:hidden text-2xl">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -18,8 +29,12 @@
         />
       </svg>
     </button>
-    <router-link to="/admin/login">
-      <button class="text-gray-600 flex gap-1.5 cursor-pointer hover:text-gray-800">
+
+      <button 
+      class="text-gray-600 flex gap-1.5 cursor-pointer hover:text-gray-800"
+        @click="logout"
+      >
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -36,6 +51,6 @@
         </svg>
         Déconnexion
       </button>
-    </router-link>
+
   </header>
 </template>

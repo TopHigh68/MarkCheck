@@ -63,7 +63,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="min-h-[800px] flex items-center justify-center bg-gray-50">
+  <div class="h-full flex items-center justify-center bg-gray-50">
     <div class="flex w-full max-w-4xl h-[500px] bg-white shadow-lg border border-gray-200 rounded-3xl">
       <!-- Image à gauche -->
       <div class="w-1/2 bg-gray-50 flex items-center justify-center p-8 rounded-3xl">

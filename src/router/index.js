@@ -6,8 +6,11 @@ import AdhesionForm from '../views/AdhesionForm.vue'
 import ContactView from '../views/ContactView.vue'
 import AdminLogin from '../views/Admin/AdminLogin.vue'
 import AdminDashboard from '../views/Admin/AdminDashboard.vue'
+import NewRequest from '../views/Admin/NewRequest.vue'
+import ListVendor from '../views/Admin/ListVendor.vue'
 import Layout from '../components/layout/layout.vue'
 import AdminLayout from '../components/Admin/AdminLayout/AdminLayout.vue'
+import PageNotFound from '../views/PageNotFound.vue' // Importez votre composant 404
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +27,10 @@ const router = createRouter({
 
     {
       path: '/admin',
+      redirect: (to) => {
+        const authStore = useAdminAuthStore()
+        return authStore.isAuthenticated ? '/admin/dashboard' : '/admin/login'
+      },
       component: AdminLayout,
       children: [
         {
@@ -38,8 +45,26 @@ const router = createRouter({
           component: AdminDashboard,
           meta: { requiresAuth: true },
         },
+        {
+          path: 'demandes',
+          name: 'newrequest',
+          component: NewRequest,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'vendeurs',
+          name: 'vendor',
+          component: ListVendor,
+          meta: { requiresAuth: true },
+        },
       ],
     },
+    // Ajoutez cette route à la fin pour capturer toutes les routes non définies
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: PageNotFound
+    }
   ],
 })
 
@@ -55,7 +80,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
 
-   if (to.path.startsWith('/admin') && to.name !== 'login') {
+  if (to.path.startsWith('/admin') && to.name !== 'login') {
     if (!authStore.isAuthenticated) {
       return next('/admin/login')
     }
